@@ -5,10 +5,14 @@ import { Dashboard } from '@/pages/Dashboard';
 import { NewsPage } from '@/pages/NewsPage';
 import { EventsPage } from '@/pages/EventsPage';
 import { CreateUserPage } from '@/pages/CreateUserPage';
+import { LoginPage } from '@/pages/LoginPage';
+import { UserProfileModal } from '@/components/UserProfileModal';
 import { Home, Newspaper, Calendar, UserPlus, User } from 'lucide-react';
 
 export default function Index() {
   const [currentPage, setCurrentPage] = useState('dashboard');
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true); // For demo purposes
 
   const navItems = [
     { id: 'dashboard', label: 'INICIO', icon: Home },
@@ -31,6 +35,17 @@ export default function Index() {
         return <Dashboard />;
     }
   };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setIsProfileModalOpen(false);
+    setCurrentPage('login');
+  };
+
+  // Show login page if not logged in
+  if (!isLoggedIn) {
+    return <LoginPage />;
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -72,7 +87,10 @@ export default function Index() {
             </nav>
 
             {/* Profile Icon */}
-            <div className="w-10 h-10 bg-primary-foreground/20 rounded-full flex items-center justify-center backdrop-blur-sm cursor-pointer hover:bg-primary-foreground/30 transition-colors animate-fade-in">
+            <div 
+              className="w-10 h-10 bg-primary-foreground/20 rounded-full flex items-center justify-center backdrop-blur-sm cursor-pointer hover:bg-primary-foreground/30 transition-colors animate-fade-in"
+              onClick={() => setIsProfileModalOpen(true)}
+            >
               <User className="h-5 w-5" />
             </div>
           </div>
@@ -106,6 +124,13 @@ export default function Index() {
       <main className="animate-fade-in">
         {renderCurrentPage()}
       </main>
+
+      {/* User Profile Modal */}
+      <UserProfileModal
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+        onLogout={handleLogout}
+      />
     </div>
   );
 }
